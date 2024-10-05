@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debouncing Example</title>
+</head>
+<body>
+  <h1>Debouncing Input Search</h1>
+  <input type="text" id="search" placeholder="Type to search..." />
+
+  <ul id="results"></ul>
+
+  <script>
+    let clock
+    const list = document.getElementById('results')
+
+
+    async function updateList(event){
+        const query = event.target.value
+        // console.log('hi')
+        // console.log(query)
+        if (!query) {
+            list.innerHTML = ''
+            return   // if query is empty return do not send request to server
+        }
+        const response = await fetch(`https://api.github.com/search/users?q=${query}`)
+        const data = await response.json()
+        console.log(data)
+        const users = data.items
+        list.innerHTML = ''
+        users.forEach(user => {
+            const entry = document.createElement('li')
+            entry.textContent = user.login
+            list.appendChild(entry)
+        });
+    }
+
+    function debounce(event){
+        clearTimeout(clock)
+        clock = setTimeout(()=>{updateList(event)},600);
+    }
+    const search = document.getElementById('search')
+    search.addEventListener('input',debounce)
+  </script>
+</body>
+</html>

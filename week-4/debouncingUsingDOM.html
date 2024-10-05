@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debouncing Example</title>
+</head>
+<body>
+  <h1>Typing updater using Debouncing</h1>
+  <h3>Updates get reflected after 1 seconds of inactivity(typing)</h3>
+  <textarea id="search" rows="10" cols="50" placeholder="Type Here..."></textarea>
+  <p></p>
+  <script>
+    // Initialize a variable 'clock' to store the setTimeout reference, so that we can clear it if needed.
+    let clock;
+
+    // Get the search input field element by its ID.
+    const searchBar = document.getElementById("search");
+
+    // Get the paragraph element where we'll display the typed input.
+    const para = document.querySelector('p');
+
+    // Function to update the paragraph with the input value from the event.
+    // It takes 'event' as a parameter and uses 'event.target.value' to get the current text typed in the input.
+    function appender(event){
+        para.textContent = event.target.value;  // Update the paragraph with input text.
+    }
+
+    // Debounce function ensures that appender() only gets executed after a delay of 1 seconds from the user's last keystroke.
+    // If the user types again within 1 seconds, the previous timer is cleared and reset.
+    function debounce(event){
+        clearTimeout(clock);  // Clear the previous timer if the user is still typing.
+        // Set a new timer for 1 seconds. If the user stops typing for 1 seconds, appender() will be called.
+        clock = setTimeout(() => { appender(event); }, 1000);
+    }
+
+    // Add an 'input' event listener to the searchBar, which calls the debounce function every time the user types.
+    // The 'event' object is automatically passed to the debounce function by JavaScript.
+    searchBar.addEventListener('input', debounce);
+
+  </script>
+</body>
+</html>
+
+
+
+
