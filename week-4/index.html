@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <script>
+    let todoState = [];
+    let oldTodoState = [];
+
+    function addTodoToDom(todo) {
+      const newTodo = document.createElement('div')
+      const newTitle = document.createElement('div')
+      const newDescription = document.createElement('div')
+      const newId = document.createElement('div')
+      newTitle.innerHTML = todo.title
+      newTitle.classList.add('title')
+      newDescription.innerHTML = todo.description
+      newDescription.classList.add('description')
+      newId.innerHTML = todo.id
+      newTodo.appendChild(newId)
+      newTodo.appendChild(newTitle)
+      newTodo.appendChild(newDescription)
+      newTodo.setAttribute("id",`todo-${todo.id}`)
+      document.getElementById('todos').appendChild(newTodo)    
+    }
+
+    function removeTodoFromDom(todo) {
+      const todoElement = document.getElementById(`todo-${todo.id}`)
+      if (todoElement) {
+        todoElement.remove()
+      } 
+    }
+
+    function updateTodoInDom(newTodo) {
+    // Locate the existing todo element in the DOM using its id
+    const todoElement = document.getElementById(`todo-${newTodo.id}`);
+  
+    if (todoElement) {
+      // Update the title and description if they have changed
+      todoElement.querySelector('.title').textContent = newTodo.title;
+      todoElement.querySelector('.description').textContent = newTodo.description;
+  }
+}
+
+
+    function updateState(newTodos) {
+      const added = [];
+      const deleted = [];
+      const updated = [];
+
+      newTodos.forEach(newTodo => {
+        const oldTodo = oldTodoState.find(oldTodo => oldTodo.id === newTodo.id)
+        if (oldTodo) {
+          updated.push(newTodo)
+          oldTodoState.splice(oldTodoState.indexOf(oldTodo),1)
+        }else{
+          added.push(newTodo)
+        }
+      });
+      deleted.push(...oldTodoState)
+      oldTodoState = [...newTodos]  
+      // why not oldTodoState = newTodos   shallow copy and deep copy
+      added.forEach((todo)=>{addTodoToDom(todo)})
+      updated.forEach(todo => updateTodoInDom(todo))
+      deleted.forEach(todo => removeTodoFromDom(todo))
+    }
+    setInterval(() => {
+    fetch('http://localhost:3000/todos')
+      .then(response => response.json())
+      .then(data => {
+        // console.log(data); // This will log in the browser's console
+        newTodos = data.todos
+        updateState(newTodos)
+      });
+    }, 3000);
+  </script>
+</head>
+
+<body>
+  <h1>ToDos</h1>
+  <div id="todos">
+
+  </div>
+</body>
+
+</html>
