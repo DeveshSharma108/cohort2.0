@@ -1,0 +1,6 @@
+how to add your custom sub-domain name instead of the default cloudfront provided one.
+how to issue a certificate.
+
+Above things are possible if you have your own domain name 
+currently the project for testing can be accessed via 
+https://d339jn4gclxd4s.cloudfront.net
